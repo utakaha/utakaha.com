@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <%= render_partial "head" %>
+  </head>
+
+  <body>
+    <%= render_partial "header" %>
+
+    <section class="section">
+      <h2>Posts</h2>
+      <ul>
+        <% posts.each do |slug, title, date| %>
+          <li>
+            <a href="/posts/<%= slug %>.html">
+              <%= date %>
+              &nbsp;&nbsp;
+              <%= title %>
+            </a>
+          </li>
+        <% end %>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>About</h2>
+      <div class="identity">
+        <div style="width: 50%; text-align: center;">
+          <img src="/assets/images/icon.webp" alt="アイコン" class="icon">
+        </div>
+        <div style="width: 50%;">
+          <ul>
+            <li><a href="https://twitter.com/utakaha">Twitter</a></li>
+            <li><a href="https://github.com/utakaha">GitHub</a></li>
+            <li><a href="https://www.linkedin.com/in/utakaha">LinkedIn</a></li>
+            <li><a href="https://unsplash.com/@utakaha">Unsplash</a></li>
+          </ul>
+      </div>
+      </div>
+    </section>
+
+    <%= render_partial "footer" %>
+  </body>
+</html>

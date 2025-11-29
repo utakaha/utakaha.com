@@ -1,0 +1,61 @@
+body {
+  max-width: 780px;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 1rem;
+  font-size: 18px;
+  font-family: "Noto Sans JP", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: #1a73e8;
+  text-decoration: none;
+  word-break: break-all;
+}
+
+li {
+  padding: .2em 0;
+}
+
+.header {
+  padding: 2rem 0;
+  text-align: center;
+}
+
+.header-logo {
+  text-decoration: none;
+  color: #000;
+  font-weight: bold;
+  font-size: 2rem;
+}
+
+.icon {
+  width: 70%;
+}
+
+.section {
+  margin-bottom: 4em;
+}
+
+.identity {
+  display: flex; 
+  justify-content: space-between;
+  align-items: center;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.footer {
+  text-align: center;
+}
+
+.twitter-tweet {
+  margin: auto;
+}

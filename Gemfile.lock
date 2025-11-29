@@ -1,0 +1,18 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    redcarpet (3.6.1)
+    rouge (4.6.1)
+    webrick (1.8.1)
+
+PLATFORMS
+  arm64-darwin-23
+  ruby
+
+DEPENDENCIES
+  redcarpet
+  rouge
+  webrick
+
+BUNDLED WITH
+   2.5.14
