@@ -12,13 +12,14 @@ def render_partial(name, locals = {})
 end
 
 public_dir = File.expand_path('./public/', __dir__)
+
 public_files = Dir.glob(public_dir + '/*')
 FileUtils.rm_rf(public_files)
 
 template_path = './templates/post.html.erb'
 template = File.read(template_path)
 
-Dir.mkdir(public_dir + '/posts')
+FileUtils.mkdir_p(File.join(public_dir, 'posts'))
 
 class Render < Redcarpet::Render::HTML
   include Rouge::Plugins::Redcarpet
