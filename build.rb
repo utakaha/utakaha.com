@@ -69,3 +69,12 @@ result = erb.result_with_hash(posts: posts.sort_by { |_, _, date| date }.reverse
 File.open("./public/index.html", 'w') do |file|
   file.write(result)
 end
+
+not_found_template_template_path = './templates/404.html.erb'
+not_found_template = File.read(not_found_template_template_path)
+@title = "404 Not Found"
+erb = ERB.new(not_found_template)
+result = erb.result(binding)
+File.open("./public/404.html", 'w') do |file|
+  file.write(result)
+end
