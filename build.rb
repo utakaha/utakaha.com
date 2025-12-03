@@ -17,22 +17,35 @@ end
 
 class Build
   def start
-    public_dir = File.expand_path('./public/', __dir__)
+    remove_public_dir
+    build_assets
+    build_index_page
+    build_post_pages
+    build_404_page
+  end
 
+  private
+
+  def public_dir
+    File.expand_path('./public/', __dir__)
+  end
+
+  def remove_public_dir
     public_files = Dir.glob(public_dir + '/*')
     FileUtils.rm_rf(public_files)
+  end
 
-    template_path = './templates/post.html.erb'
-    template = File.read(template_path)
-
-    FileUtils.mkdir_p(File.join(public_dir, 'posts'))
-
-
+  def build_assets
+    assets_src_dir = File.expand_path('./assets/', __dir__)
+    assets_dst_dir = File.expand_path('./public/assets/', __dir__)
+    FileUtils.mkdir_p(assets_dst_dir)
+    FileUtils.cp_r(Dir.glob(assets_src_dir + '/*'), assets_dst_dir)
+  end
+  
+  def posts
     markdown = Redcarpet::Markdown.new(Render, extensions = { fenced_code_blocks: true })
-
-    posts_dir = File.expand_path('./posts/', __dir__)
-    post_paths = Dir.glob(posts_dir + '/*')
-    posts = post_paths.map do |post_path|
+    post_paths = Dir.glob(File.expand_path('./posts/', __dir__) + '/*')
+    post_paths.map do |post_path|
       slug = File.basename(post_path, ".md")
       content_markdown = File.read(post_path)
 
@@ -50,21 +63,12 @@ class Build
       title = front_matter["title"]
       date = Date.parse(front_matter["date"])
       content = markdown.render(content_markdown)
-      erb = ERB.new(template)
-      result = erb.result_with_hash(title: title, date: date, content: content)
-      output_path = "./public/posts/#{slug}.html"
 
-      File.open(output_path, 'w') do |file|
-        file.write(result)
-      end
-      [slug, title, date]
+      [slug, title, date, content]
     end
+  end
 
-    assets_src_dir = File.expand_path('./assets/', __dir__)
-    assets_dst_dir = File.expand_path('./public/assets/', __dir__)
-    FileUtils.mkdir_p(assets_dst_dir)
-    FileUtils.cp_r(Dir.glob(assets_src_dir + '/*'), assets_dst_dir)
-
+  def build_index_page
     index_template_path = './templates/index.html.erb'
     index_template = File.read(index_template_path)
     title = "@utakaha"
@@ -73,7 +77,26 @@ class Build
     File.open("./public/index.html", 'w') do |file|
       file.write(result)
     end
+  end
 
+  def build_post_pages
+    template_path = './templates/post.html.erb'
+    template = File.read(template_path)
+
+    FileUtils.mkdir_p(File.join(public_dir, 'posts'))
+
+    posts.each do |slug, title, date, content|
+      erb = ERB.new(template)
+      result = erb.result_with_hash(title: title, date: date, content: content)
+      output_path = "./public/posts/#{slug}.html"
+
+      File.open(output_path, 'w') do |file|
+        file.write(result)
+      end
+    end
+  end
+
+  def build_404_page
     not_found_template_template_path = './templates/404.html.erb'
     not_found_template = File.read(not_found_template_template_path)
     title = "404 Not Found"
