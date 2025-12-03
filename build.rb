@@ -63,6 +63,7 @@ FileUtils.cp_r(Dir.glob(assets_src_dir + '/*'), assets_dst_dir)
 
 index_template_path = './templates/index.html.erb'
 index_template = File.read(index_template_path)
+@title = "@utakaha"
 erb = ERB.new(index_template)
 result = erb.result_with_hash(posts: posts.sort_by { |_, _, date| date }.reverse)
 File.open("./public/index.html", 'w') do |file|
