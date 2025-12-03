@@ -15,7 +15,7 @@ jobs:
           ruby-version: '3.4'
           bundler-cache: true
       - name: Build
-        run: bundle install && bundle exec ruby build.rb
+        run: bundle install && bin/build
       - name: Deploy
         uses: cloudflare/wrangler-action@v3
         with:

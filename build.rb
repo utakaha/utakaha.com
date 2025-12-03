@@ -107,5 +107,3 @@ class Build
     end
   end
 end
-
-Build.new.start
