@@ -5,14 +5,10 @@ require 'rouge'
 require 'rouge/plugins/redcarpet'
 require 'yaml'
 
+require_relative 'lib/template_renderer'
+
 class Render < Redcarpet::Render::HTML
   include Rouge::Plugins::Redcarpet
-end
-
-def render_partial(name, locals = {})
-  partial_path = File.expand_path("./templates/_#{name}.html.erb", __dir__)
-  partial_source = File.read(partial_path)
-  ERB.new(partial_source).result_with_hash(locals)
 end
 
 class Build
@@ -65,29 +61,29 @@ class Build
       content = markdown.render(content_markdown)
 
       [slug, title, date, content]
-    end
+    end.sort_by { |_, _, date, _| date }.reverse
   end
 
   def build_index_page
     index_template_path = './templates/index.html.erb'
     index_template = File.read(index_template_path)
     title = "@utakaha"
-    erb = ERB.new(index_template)
-    result = erb.result_with_hash(posts: posts.sort_by { |_, _, date| date }.reverse, title: title)
+    renderer = TemplateRenderer.new(index_template, posts: posts, title: title)
+    result = renderer.render_template
     File.open("./public/index.html", 'w') do |file|
       file.write(result)
     end
   end
 
   def build_post_pages
-    template_path = './templates/post.html.erb'
-    template = File.read(template_path)
+    post_template_path = './templates/post.html.erb'
+    post_template = File.read(post_template_path)
 
     FileUtils.mkdir_p(File.join(public_dir, 'posts'))
 
     posts.each do |slug, title, date, content|
-      erb = ERB.new(template)
-      result = erb.result_with_hash(title: title, date: date, content: content)
+      renderer = TemplateRenderer.new(post_template, title: title, date: date, content: content)
+      result = renderer.render_template
       output_path = "./public/posts/#{slug}.html"
 
       File.open(output_path, 'w') do |file|
@@ -100,8 +96,8 @@ class Build
     not_found_template_template_path = './templates/404.html.erb'
     not_found_template = File.read(not_found_template_template_path)
     title = "404 Not Found"
-    erb = ERB.new(not_found_template)
-    result = erb.result_with_hash(title: title)
+    renderer = TemplateRenderer.new(not_found_template, title: title)
+    result = renderer.render_template
     File.open("./public/404.html", 'w') do |file|
       file.write(result)
     end
