@@ -68,7 +68,7 @@ class Build
     index_template_path = './templates/index.html.erb'
     index_template = File.read(index_template_path)
     title = "@utakaha"
-    renderer = TemplateRenderer.new(index_template, posts: posts, title: title)
+    renderer = TemplateRenderer.new(index_template, posts:, title:)
     result = renderer.render
     File.open("./public/index.html", 'w') do |file|
       file.write(result)
@@ -82,7 +82,7 @@ class Build
     FileUtils.mkdir_p(File.join(public_dir, 'posts'))
 
     posts.each do |slug, title, date, content|
-      renderer = TemplateRenderer.new(post_template, title: title, date: date, content: content)
+      renderer = TemplateRenderer.new(post_template, title:, date:, content:)
       result = renderer.render
       output_path = "./public/posts/#{slug}.html"
 
@@ -96,7 +96,7 @@ class Build
     not_found_template_template_path = './templates/404.html.erb'
     not_found_template = File.read(not_found_template_template_path)
     title = "404 Not Found"
-    renderer = TemplateRenderer.new(not_found_template, title: title)
+    renderer = TemplateRenderer.new(not_found_template, title:)
     result = renderer.render
     File.open("./public/404.html", 'w') do |file|
       file.write(result)
