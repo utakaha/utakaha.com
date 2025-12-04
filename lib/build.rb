@@ -6,14 +6,15 @@ require 'rouge/plugins/redcarpet'
 require 'yaml'
 
 require_relative 'template_renderer'
-
-ROOT_PATH = File.expand_path('..', __dir__)
+require_relative 'post'
 
 class Render < Redcarpet::Render::HTML
   include Rouge::Plugins::Redcarpet
 end
 
 class Build
+  ROOT_PATH = File.expand_path('..', __dir__)
+
   def start
     remove_public_dir
     build_assets
@@ -41,29 +42,7 @@ class Build
   end
   
   def posts
-    markdown = Redcarpet::Markdown.new(Render, extensions = { fenced_code_blocks: true })
-    post_paths = Dir.glob(File.expand_path('posts/', ROOT_PATH) + '/*')
-    post_paths.map do |post_path|
-      slug = File.basename(post_path, ".md")
-      content_markdown = File.read(post_path)
-
-      if content_markdown =~ /\A---\s*\n(.*?)\n---\s*\n/m
-        content_markdown = Regexp.last_match.post_match
-        front_matter = YAML.safe_load(
-          Regexp.last_match(1),
-          permitted_classes: [Date, Time],
-          aliases: true
-        )
-      else
-        raise "Front Matter not found"
-      end
-
-      title = front_matter["title"]
-      date = Date.parse(front_matter["date"])
-      content = markdown.render(content_markdown)
-
-      [slug, title, date, content]
-    end.sort_by { |_, _, date, _| date }.reverse
+    @posts ||= Post.all
   end
 
   def build_index_page
@@ -83,10 +62,15 @@ class Build
 
     FileUtils.mkdir_p(File.join(public_dir, 'posts'))
 
-    posts.each do |slug, title, date, content|
-      renderer = TemplateRenderer.new(post_template, title:, date:, content:)
+    posts.each do |post|
+      renderer = TemplateRenderer.new(
+                   post_template, 
+                   title: post.title, 
+                   date: post.date, 
+                   content: post.content
+                 )
       result = renderer.render
-      output_path = File.expand_path("public/posts/#{slug}.html", ROOT_PATH)
+      output_path = File.expand_path("public/posts/#{post.slug}.html", ROOT_PATH)
 
       File.open(output_path, 'w') do |file|
         file.write(result)
