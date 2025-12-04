@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
 require 'bundler/setup'
-require_relative '../build'
+require_relative '../lib/build'
 
 Build.new.start

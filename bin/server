@@ -1,7 +1,10 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
 require 'webrick'
 
 server_config = {
-  DocumentRoot: './public',
+  DocumentRoot: File.expand_path('../public', __dir__),
   Port: 8000,
 }
 

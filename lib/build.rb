@@ -5,7 +5,9 @@ require 'rouge'
 require 'rouge/plugins/redcarpet'
 require 'yaml'
 
-require_relative 'lib/template_renderer'
+require_relative 'template_renderer'
+
+ROOT_PATH = File.expand_path('..', __dir__)
 
 class Render < Redcarpet::Render::HTML
   include Rouge::Plugins::Redcarpet
@@ -23,7 +25,7 @@ class Build
   private
 
   def public_dir
-    File.expand_path('./public/', __dir__)
+    File.expand_path('public/', ROOT_PATH)
   end
 
   def remove_public_dir
@@ -32,15 +34,15 @@ class Build
   end
 
   def build_assets
-    assets_src_dir = File.expand_path('./assets/', __dir__)
-    assets_dst_dir = File.expand_path('./public/assets/', __dir__)
+    assets_src_dir = File.expand_path('assets/', ROOT_PATH)
+    assets_dst_dir = File.expand_path('public/assets/', ROOT_PATH)
     FileUtils.mkdir_p(assets_dst_dir)
     FileUtils.cp_r(Dir.glob(assets_src_dir + '/*'), assets_dst_dir)
   end
   
   def posts
     markdown = Redcarpet::Markdown.new(Render, extensions = { fenced_code_blocks: true })
-    post_paths = Dir.glob(File.expand_path('./posts/', __dir__) + '/*')
+    post_paths = Dir.glob(File.expand_path('posts/', ROOT_PATH) + '/*')
     post_paths.map do |post_path|
       slug = File.basename(post_path, ".md")
       content_markdown = File.read(post_path)
@@ -65,18 +67,18 @@ class Build
   end
 
   def build_index_page
-    index_template_path = './templates/index.html.erb'
+    index_template_path = File.expand_path('templates/index.html.erb', ROOT_PATH)
     index_template = File.read(index_template_path)
     title = "@utakaha"
     renderer = TemplateRenderer.new(index_template, posts:, title:)
     result = renderer.render
-    File.open("./public/index.html", 'w') do |file|
+    File.open(File.expand_path('public/index.html', ROOT_PATH), 'w') do |file|
       file.write(result)
     end
   end
 
   def build_post_pages
-    post_template_path = './templates/post.html.erb'
+    post_template_path = File.expand_path('templates/post.html.erb', ROOT_PATH)
     post_template = File.read(post_template_path)
 
     FileUtils.mkdir_p(File.join(public_dir, 'posts'))
@@ -84,7 +86,7 @@ class Build
     posts.each do |slug, title, date, content|
       renderer = TemplateRenderer.new(post_template, title:, date:, content:)
       result = renderer.render
-      output_path = "./public/posts/#{slug}.html"
+      output_path = File.expand_path("public/posts/#{slug}.html", ROOT_PATH)
 
       File.open(output_path, 'w') do |file|
         file.write(result)
@@ -93,12 +95,12 @@ class Build
   end
 
   def build_404_page
-    not_found_template_template_path = './templates/404.html.erb'
+    not_found_template_template_path = File.expand_path('templates/404.html.erb', ROOT_PATH)
     not_found_template = File.read(not_found_template_template_path)
     title = "404 Not Found"
     renderer = TemplateRenderer.new(not_found_template, title:)
     result = renderer.render
-    File.open("./public/404.html", 'w') do |file|
+    File.open(File.expand_path('public/404.html', ROOT_PATH), 'w') do |file|
       file.write(result)
     end
   end
