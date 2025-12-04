@@ -69,7 +69,7 @@ class Build
     index_template = File.read(index_template_path)
     title = "@utakaha"
     renderer = TemplateRenderer.new(index_template, posts: posts, title: title)
-    result = renderer.render_template
+    result = renderer.render
     File.open("./public/index.html", 'w') do |file|
       file.write(result)
     end
@@ -83,7 +83,7 @@ class Build
 
     posts.each do |slug, title, date, content|
       renderer = TemplateRenderer.new(post_template, title: title, date: date, content: content)
-      result = renderer.render_template
+      result = renderer.render
       output_path = "./public/posts/#{slug}.html"
 
       File.open(output_path, 'w') do |file|
@@ -97,7 +97,7 @@ class Build
     not_found_template = File.read(not_found_template_template_path)
     title = "404 Not Found"
     renderer = TemplateRenderer.new(not_found_template, title: title)
-    result = renderer.render_template
+    result = renderer.render
     File.open("./public/404.html", 'w') do |file|
       file.write(result)
     end
