@@ -1,7 +1,6 @@
 ---
 title: 'Rackアプリケーションが起動するまでの処理を追う'
 date: '2024-12-12'
-image: 'rack.png'
 ---
 
 [SmartHR Advent Calendar 2024 シリーズ1](https://qiita.com/advent-calendar/2024)の12日目です。昨日はyurikoさんの[入社して1年、「修復」への道](https://yuriko1211.hatenablog.com/entry/2024/12/11/085346)でした。

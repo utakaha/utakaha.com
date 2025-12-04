@@ -1,7 +1,6 @@
 ---
 title: '引っ越し2022'
 date: '2022-10-27'
-image: 'moving-2022.png'
 ---
 
 ![武蔵境](/assets/images/musashisakai.webp)

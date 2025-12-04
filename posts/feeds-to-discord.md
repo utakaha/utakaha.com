@@ -1,7 +1,6 @@
 ---
 title: 'DiscordにRSSフィードを流す'
 date: '2020-12-30'
-image: 'feeds-to-discord.png'
 ---
 
 DiscordにRSSフィードを流したい時があったのでその時の作業まとめを書く。
