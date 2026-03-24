@@ -14,12 +14,17 @@ end
 
 class Build
   ROOT_PATH = File.expand_path('..', __dir__)
+  BASE_URL = 'https://utakaha.com'
+  FEED_URL = "#{BASE_URL}/feed.xml"
+  FEED_TITLE = '@utakaha'
+  FEED_AUTHOR = 'utakaha'
 
   def start
     remove_public_dir
     build_assets
     build_index_page
     build_post_pages
+    build_atom_feed
     build_404_page
   end
 
@@ -78,6 +83,24 @@ class Build
     end
   end
 
+  def build_atom_feed
+    feed_template_path = File.expand_path('templates/feed.xml.erb', ROOT_PATH)
+    feed_template = File.read(feed_template_path)
+    renderer = TemplateRenderer.new(
+      feed_template,
+      posts:,
+      feed_url: FEED_URL,
+      feed_title: FEED_TITLE,
+      feed_author: FEED_AUTHOR,
+      base_url: BASE_URL,
+      feed_updated_at:
+    )
+    feed = renderer.render
+    File.open(File.expand_path('public/feed.xml', ROOT_PATH), 'w') do |file|
+      file.write(feed)
+    end
+  end
+
   def build_404_page
     not_found_template_template_path = File.expand_path('templates/404.html.erb', ROOT_PATH)
     not_found_template = File.read(not_found_template_template_path)
@@ -87,5 +110,9 @@ class Build
     File.open(File.expand_path('public/404.html', ROOT_PATH), 'w') do |file|
       file.write(result)
     end
+  end
+
+  def feed_updated_at
+    posts.first&.published_at || Time.new(1970, 1, 1, 0, 0, 0, "+09:00")
   end
 end

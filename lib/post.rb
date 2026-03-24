@@ -1,5 +1,10 @@
+require 'cgi'
+require 'time'
+
 class Post
   ROOT_PATH = File.expand_path('..', __dir__)
+  BASE_URL = 'https://utakaha.com'
+  SUMMARY_LENGTH = 150
 
   def initialize(slug, title, date, content)
     @slug = slug
@@ -9,6 +14,25 @@ class Post
   end
 
   attr_reader :slug, :title, :date, :content
+
+  def url
+    "#{BASE_URL}/posts/#{slug}.html"
+  end
+
+  def feed_id
+    "#{BASE_URL}/posts/#{slug}"
+  end
+
+  def published_at
+    Time.new(date.year, date.month, date.day, 0, 0, 0, "+09:00")
+  end
+
+  def summary
+    text = CGI.unescapeHTML(content.gsub(/<[^>]+>/, ' ')).gsub(/\s+/, ' ').strip
+    return text if text.length <= SUMMARY_LENGTH
+
+    "#{text[0, SUMMARY_LENGTH]}..."
+  end
 
   def self.all
     markdown = Redcarpet::Markdown.new(Render, extensions = { fenced_code_blocks: true })
