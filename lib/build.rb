@@ -105,6 +105,8 @@ class Build
   def build_cloudflare_pages_redirects
     redirects = <<~REDIRECTS
       /feed /feed.xml 301
+      /atom /feed.xml 301
+      /rss /feed.xml 301
     REDIRECTS
     File.open(File.expand_path('public/_redirects', ROOT_PATH), 'w') do |file|
       file.write(redirects)
