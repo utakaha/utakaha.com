@@ -15,7 +15,7 @@ end
 class Build
   ROOT_PATH = File.expand_path('..', __dir__)
   BASE_URL = 'https://utakaha.com'
-  FEED_URL = "#{BASE_URL}/feed"
+  FEED_URL = "#{BASE_URL}/feed.xml"
   FEED_TITLE = '@utakaha'
   FEED_AUTHOR = 'utakaha'
 
@@ -25,7 +25,7 @@ class Build
     build_index_page
     build_post_pages
     build_atom_feed
-    build_cloudflare_pages_config
+    build_cloudflare_pages_redirects
     build_404_page
   end
 
@@ -102,20 +102,9 @@ class Build
     end
   end
 
-  def build_cloudflare_pages_config
-    headers = <<~HEADERS
-      /feed
-        Content-Type: application/atom+xml; charset=UTF-8
-
-      /feed.xml
-        Content-Type: application/atom+xml; charset=UTF-8
-    HEADERS
-    File.open(File.expand_path('public/_headers', ROOT_PATH), 'w') do |file|
-      file.write(headers)
-    end
-
+  def build_cloudflare_pages_redirects
     redirects = <<~REDIRECTS
-      /feed /feed.xml 200
+      /feed /feed.xml 301
     REDIRECTS
     File.open(File.expand_path('public/_redirects', ROOT_PATH), 'w') do |file|
       file.write(redirects)
