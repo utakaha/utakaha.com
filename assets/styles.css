@@ -96,7 +96,15 @@ li {
     font-size: 25px;
   }
 
+  .title {
+    font-size: 30px;
+  }
+
   .section-title {
     font-size: 20px;
+  }
+
+  .footer {
+    font-size: 15px;
   }
 }
