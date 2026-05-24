@@ -30,6 +30,12 @@ img {
   height: auto;
 }
 
+.content img {
+  display: block;
+  margin-right: auto;
+  margin-left: auto;
+}
+
 a {
   color: #1a73e8;
   text-decoration: none;
