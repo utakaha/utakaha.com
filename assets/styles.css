@@ -86,3 +86,17 @@ li {
 .twitter-tweet {
   margin: auto;
 }
+
+@media (max-width: 600px) {
+  .header {
+    text-align: left;
+  }
+
+  .header-logo {
+    font-size: 25px;
+  }
+
+  .section-title {
+    font-size: 20px;
+  }
+}
