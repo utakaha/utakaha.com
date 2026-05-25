@@ -55,7 +55,13 @@ class Build
     index_template_path = File.expand_path('templates/index.html.erb', ROOT_PATH)
     index_template = File.read(index_template_path)
     title = "@utakaha"
-    renderer = TemplateRenderer.new(index_template, posts:, title:)
+    description = "The personal website of utakaha."
+    renderer = TemplateRenderer.new(
+      index_template,
+      posts: posts,
+      title: title,
+      description: description
+    )
     result = renderer.render
     File.open(File.expand_path('public/index.html', ROOT_PATH), 'w') do |file|
       file.write(result)
@@ -73,7 +79,8 @@ class Build
                    post_template, 
                    title: post.title, 
                    date: post.date, 
-                   content: post.content
+                   content: post.content,
+                   description: post.summary
                  )
       result = renderer.render
       output_path = File.expand_path("public/posts/#{post.slug}.html", ROOT_PATH)
@@ -89,12 +96,12 @@ class Build
     feed_template = File.read(feed_template_path)
     renderer = TemplateRenderer.new(
       feed_template,
-      posts:,
+      posts: posts,
       feed_url: FEED_URL,
       feed_title: FEED_TITLE,
       feed_author: FEED_AUTHOR,
       base_url: BASE_URL,
-      feed_updated_at:
+      feed_updated_at: feed_updated_at
     )
     feed = renderer.render
     File.open(File.expand_path('public/feed.xml', ROOT_PATH), 'w') do |file|
@@ -117,7 +124,12 @@ class Build
     not_found_template_template_path = File.expand_path('templates/404.html.erb', ROOT_PATH)
     not_found_template = File.read(not_found_template_template_path)
     title = "404 Not Found"
-    renderer = TemplateRenderer.new(not_found_template, title:)
+    description = "The page you are looking for is not here."
+    renderer = TemplateRenderer.new(
+      not_found_template,
+      title: title,
+      description: description
+    )
     result = renderer.render
     File.open(File.expand_path('public/404.html', ROOT_PATH), 'w') do |file|
       file.write(result)
