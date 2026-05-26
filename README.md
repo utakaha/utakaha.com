@@ -12,7 +12,7 @@ Build the static files into `public/`:
 bin/build
 ```
 
-Serve the generated site at http://localhost:8000:
+Build the static files, serve the site at http://localhost:8000, and rebuild when source files change:
 ```
 bin/server
 ```

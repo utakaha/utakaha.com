@@ -2,12 +2,80 @@
 
 require 'bundler/setup'
 require 'webrick'
+require_relative '../lib/build'
+
+ROOT_PATH = File.expand_path('..', __dir__)
+WATCH_PATHS = %w[posts templates assets lib].map { |path| File.join(ROOT_PATH, path) }
+WATCH_INTERVAL = 1.0
+# Wait briefly after detecting changes because some editors perform multiple
+# file operations or temporary rewrites during a single save.
+DEBOUNCE_INTERVAL = 0.2
+
+build_mutex = Mutex.new
+snapshot_mutex = Mutex.new
+
+def watched_files
+  WATCH_PATHS.flat_map do |path|
+    Dir.glob(File.join(path, '**', '*'), File::FNM_DOTMATCH).select { |file| File.file?(file) }
+  end
+end
+
+def file_snapshot
+  watched_files.to_h do |file|
+    stat = File.stat(file)
+    [file, [stat.mtime.to_f, stat.size]]
+  rescue Errno::ENOENT
+    [file, nil]
+  end
+end
+
+def build_site(build_mutex)
+  build_mutex.synchronize do
+    puts "[server] Building public/..."
+    Build.new.start
+    puts "[server] Build finished."
+  rescue StandardError => error
+    warn "[server] Build failed: #{error.class}: #{error.message}"
+    warn error.backtrace.join("\n")
+  end
+end
+
+def start_watcher(build_mutex, snapshot_mutex)
+  Thread.new do
+    previous_snapshot = snapshot_mutex.synchronize { file_snapshot }
+
+    loop do
+      sleep WATCH_INTERVAL
+
+      current_snapshot = snapshot_mutex.synchronize { file_snapshot }
+      next if current_snapshot == previous_snapshot
+
+      changed_files = (current_snapshot.keys | previous_snapshot.keys).select do |file|
+        current_snapshot[file] != previous_snapshot[file]
+      end
+      previous_snapshot = current_snapshot
+
+      sleep DEBOUNCE_INTERVAL
+      root_prefix = "#{ROOT_PATH}/"
+      changed_paths = changed_files.map { |file| file.delete_prefix(root_prefix) }
+      puts "[server] Changes detected: #{changed_paths.join(', ')}"
+      build_site(build_mutex)
+      previous_snapshot = snapshot_mutex.synchronize { file_snapshot }
+    end
+  end
+end
+
+build_site(build_mutex)
+watcher = start_watcher(build_mutex, snapshot_mutex)
 
 server_config = {
-  DocumentRoot: File.expand_path('../public', __dir__),
+  DocumentRoot: File.join(ROOT_PATH, 'public'),
   Port: 8000,
 }
 
 server = WEBrick::HTTPServer.new(server_config)
-trap("INT"){ server.shutdown }
+trap("INT") do
+  watcher.kill
+  server.shutdown
+end
 server.start
