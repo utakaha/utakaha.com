@@ -6,7 +6,7 @@ require_relative '../lib/build'
 
 ROOT_PATH = File.expand_path('..', __dir__)
 WATCH_PATHS = %w[posts templates assets lib].map { |path| File.join(ROOT_PATH, path) }
-WATCH_INTERVAL = 1.0
+WATCH_INTERVAL = 0.5
 # Wait briefly after detecting changes because some editors perform multiple
 # file operations or temporary rewrites during a single save.
 DEBOUNCE_INTERVAL = 0.2
