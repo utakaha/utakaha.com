@@ -48,27 +48,33 @@ li {
 
 .header {
   padding: 2rem 0;
-  text-align: center;
 }
 
 .header-logo {
-  text-decoration: none;
   color: #000;
   font-weight: bold;
   font-size: 2rem;
-}
-
-.icon {
-  width: 70%;
+  border: 4px solid #000;
+  background-color: #C4DAFC;
+  padding: 8px;
+  box-shadow: 8px 8px #000;
 }
 
 .section {
   margin-bottom: 4em;
 }
 
+.title {
+  border-bottom: 4px solid #C4DAFC;
+}
+
 .content {
-  margin-top: 4em;
-  margin-bottom: 4em;
+  margin-top: 2em;
+  margin-bottom: 2em;
+}
+
+.date {
+  color: #aaa;
 }
 
 .identity {
@@ -79,8 +85,27 @@ li {
   margin-left: auto;
 }
 
-.footer {
+.identity-icon {
+  width: 50%;
   text-align: center;
+}
+
+.identity-content {
+  width: 50%;
+}
+
+.footer {
+  font-size: 14px;
+  border-top: 4px solid #C4DAFC;
+}
+
+.footer-link {
+  margin-right: 8px;
+}
+
+.footer-note {
+  margin: 0;
+  text-align: left;
 }
 
 .twitter-tweet {
@@ -93,15 +118,33 @@ li {
   }
 
   .header-logo {
-    font-size: 25px;
+    font-size: 24px;
   }
 
-  .title {
-    font-size: 30px;
+  .post-title {
+    font-size: 28px;
   }
 
   .section-title {
+    font-size: 24px;
+  }
+
+  .sub-section-title {
     font-size: 20px;
+  }
+
+  .identity {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .identity-icon,
+  .identity-content {
+    width: 100%;
+  }
+
+  .identity-icon {
+    text-align: center;
   }
 
   .footer {

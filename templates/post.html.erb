@@ -5,7 +5,10 @@
   </head>
   <body>
     <%= render_partial "header" %>
-    <h1 class="title"><%= title %></h1>
+    <h1 class="post-title">
+      <span class="title"><%= title %></span>
+    </h1>
+    <div class="date"><%= date %></div>
     <main class="content">
       <%= content %>
     </main>
